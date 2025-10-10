@@ -87,7 +87,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'FlashJobDataBase',
         'USER': 'Amaury',
-        'PASSWORD': '31333133',
+        'PASSWORD': '0123456789',
         'HOST':'localhost',
         'PORT':'3306',
     }
