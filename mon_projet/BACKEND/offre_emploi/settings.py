@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'offre_emploi.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'offre_emploi',       # le nom exact de ta base phpMyAdmin
+        'NAME': 'offre_emplois',       # le nom exact de ta base phpMyAdmin
         'USER': 'root',                  # ton utilisateur MySQL
         'PASSWORD': '@', # ton mot de passe MySQL
         'HOST': '127.0.0.1',             # ou 'localhost'

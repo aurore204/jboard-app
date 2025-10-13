@@ -16,7 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.urls import path, include  # 👈 ajoute include ici !
+from offre_emplois import views
+from django.urls import path, include  # ajoute include ici !
 from rest_framework.routers import DefaultRouter
 from offre_emplois.views import PeopleViewSet, CompaniesViewSet, AnnoncesViewSet,CandidaturesViewSet
 
@@ -29,4 +30,7 @@ router.register(r'candidatures', CandidaturesViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('offre_emplois.urls')),
+    path('login/',views.login, name='login'),
+    path('register/', views.register, name='register'),
+    path('', include(router.urls)),  #  inclut les URLs du routeur
 ]
