@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Historique des candidatures</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="max-w-6xl mx-auto p-6">
+    <h1 id="page-title" class="text-2xl font-bold mb-6">Historique</h1>
+
+    <div id="loader" class="flex justify-center items-center h-48">
+      <svg class="animate-spin h-6 w-6 text-gray-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+      </svg>
+      <p>Chargement des candidatures...</p>
+    </div>
+
+    <div id="historique-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 hidden"></div>
+
+    <p id="no-data" class="text-gray-500 text-center mt-6 hidden"></p>
+  </div>
+
+  <script>
+    const userId = 1;              // à remplacer dynamiquement selon la session utilisateur
+    const isEntreprise = false;    // true = entreprise / false = standard
+
+    // CHARGEMENT DES DONNÉES
+    async function chargerCandidatures() {
+      const loader = document.getElementById("loader");
+      const container = document.getElementById("historique-container");
+      const noDataEl = document.getElementById("no-data");
+      const titleEl = document.getElementById("page-title");
+
+      titleEl.textContent = isEntreprise
+        ? "Candidatures reçues"
+        : "Candidatures envoyées";
+
+      // URL API (à modifier selon backend)
+      const endpoint = isEntreprise
+        ? `/api/candidatures/recues/${userId}`
+        : `/api/candidatures/envoyees/${userId}`;
+
+      try {
+        const response = await fetch(endpoint);
+        if (!response.ok) throw new Error("Erreur API");
+        const data = await response.json();
+
+        loader.classList.add("hidden");
+
+        if (!data || data.length === 0) {
+          noDataEl.classList.remove("hidden");
+          noDataEl.textContent = isEntreprise
+            ? "Aucune candidature reçue pour le moment."
+            : "Aucune candidature envoyée pour le moment.";
+          return;
+        }
+
+        container.classList.remove("hidden");
+
+       
+        data.forEach((cand) => {
+          const statutClasses =
+            cand.statut === "acceptée"
+              ? "bg-green-100 text-green-800"
+              : cand.statut === "refusée"
+              ? "bg-red-100 text-red-800"
+              : "bg-yellow-100 text-yellow-800";
+
+          const card = document.createElement("div");
+          card.className =
+            "bg-white rounded-2xl shadow-sm hover:shadow-lg p-4 transition";
+
+          card.innerHTML = isEntreprise
+            ? `
+              <h2 class="text-lg font-semibold mb-1">${cand.nomCandidat}</h2>
+              <p class="text-sm text-gray-600">Poste : ${cand.offreTitre}</p>
+              <p class="text-sm text-gray-500 mb-2">Email : ${cand.emailCandidat}</p>
+              <p class="text-xs text-gray-400 mb-2">Date : ${new Date(cand.date).toLocaleDateString()}</p>
+              <span class="px-2 py-1 text-xs rounded-full ${statutClasses}">
+                ${cand.statut}
+              </span>
+            `
+            : `
+              <h2 class="text-lg font-semibold mb-1">${cand.titreOffre}</h2>
+              <p class="text-sm text-gray-600 mb-2">Entreprise : ${cand.nomEntreprise}</p>
+              <p class="text-xs text-gray-400 mb-2">Date : ${new Date(cand.date).toLocaleDateString()}</p>
+              <span class="px-2 py-1 text-xs rounded-full ${statutClasses}">
+                ${cand.statut}
+              </span>
+            `;
+
+          container.appendChild(card);
+        });
+      } catch (error) {s
+        console.error(error);
+        loader.classList.add("hidden");
+        noDataEl.classList.remove("hidden");
+        noDataEl.textContent = "Erreur de chargement des données.";
+      }
+    }
+
+    chargerCandidatures();
+  </script>
+</body>
+</html>

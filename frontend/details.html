@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FlashJob</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)), url('background2.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    .top-buttons {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+    }
+
+    .top-buttons button {
+      margin-right: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-top: 200px;
+      font-size: 2rem;
+      font-weight: bold;
+      color: gold;
+    }
+
+    .header i {
+      color: gold;
+      margin: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: rgb(0, 162, 255);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .bouton-positionne {
+      position: absolute;
+      top: 100px;
+      left: 200px;
+    }
+    .bouton-bas{
+      padding: 10px 20px;
+      background-color: rgb(0, 162, 255);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .content {
+      max-width: 800px;
+      margin: 15px auto;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .content strong {
+      color: #000;
+    }
+
+  </style>
+</head>
+<body>
+  <a>
+    <button class="bouton-positionne" onclick="window.location.href='Candidatures.html';">Candidatures</button>
+    <button style="margin-left: 1000px;" class="bouton-positionne" onclick="window.location.href='LoginRegister.html';">Login/Inscription</button>
+  </a>
+
+  <div class="header">
+    DETAILS DE L'OFFRE :
+  </div>
+
+  <div class="content">
+    <p><strong>Titre :</strong> {{ job.titre }}</p>
+    <p><strong>Description :</strong> {{ job.description }}</p>
+    <p><strong>Salaire :</strong> {{ job.salaire }} €</p>
+    <p><strong>Type de contrat :</strong> {{ job.type_contrat }}</p>
+    <p><strong>Date limite :</strong> {{ job.dateLimite }}</p>
+    <p><strong>Publié le :</strong> {{ job.datePublication }}</p>
+    <p><strong>Entreprise :</strong> {{ job.companies }}</p>
+  </div>
+  <a>
+    <buttons style="margin-left: 1050px;" class="bouton-bas" onclick="">Postuler</button>  <!--  modifier le   onclick :"" -->
+  </a>
+</body>
+</html>

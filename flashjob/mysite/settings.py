@@ -55,6 +55,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
+    #"python3 -m http.server 8080" commande pour lancer le serveur sur frontend
 
 ]
 

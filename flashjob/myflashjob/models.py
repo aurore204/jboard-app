@@ -10,3 +10,11 @@ class Job(models.Model):
 
     def __str__(self):
         return self.title
+#from myflashjob.models import Job
+#job = Job(
+ #   title="Développeur Django",
+ #   description="Développement d'applications web avec Django.",
+ #   company="TechCorp",
+ #   location="Paris",
+#)
+#job.save()
