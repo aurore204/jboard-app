@@ -2,5 +2,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('api/jobs/', views.jobs_list, name='jobs_list'),
+    path('api/personnes/', views.personnes_list, name='personnes_list'),
+    path('api/entreprises/', views.entreprises_list, name='entreprises_list'),
+    path('api/annonces/', views.annonces_list, name='annonces_list'),
+    path('api/candidatures/', views.candidatures_list, name='candidatures_list'),
 ]
