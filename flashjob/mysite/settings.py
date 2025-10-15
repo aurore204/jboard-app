@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'myflashjob',
     'corsheaders',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

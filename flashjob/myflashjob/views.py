@@ -4,6 +4,7 @@ from .models import Personne, Entreprise, Annonce, Candidature
 # Liste des Personnes
 def personnes_list(request):
     personnes = Personne.objects.all().values(
+        'id',
         'nom',
         'prenom',
         'email',
@@ -17,6 +18,7 @@ def personnes_list(request):
 # Liste des Entreprises
 def entreprises_list(request):
     entreprises = Entreprise.objects.all().values(
+        'id',
         'nom',
         'email',
         'departement',
@@ -29,6 +31,7 @@ def entreprises_list(request):
 # Liste des Annonces
 def annonces_list(request):
     annonces = Annonce.objects.all().values(
+        'id',
         'intitule_emploi',
         'description',
         'entreprise__nom',
@@ -45,6 +48,7 @@ def annonces_list(request):
 # Liste des Candidatures
 def candidatures_list(request):
     candidatures = Candidature.objects.all().values(
+        'id',
         'personne__nom',
         'personne__prenom',
         'personne__email',
@@ -54,3 +58,26 @@ def candidatures_list(request):
         'updated_at'
     )
     return JsonResponse(list(candidatures), safe=False)
+
+from django.http import JsonResponse, Http404
+from .models import Annonce
+
+def annonces_details_list(request, id):
+    try:
+        annonce = Annonce.objects.values(
+            'id',
+            'intitule_emploi',
+            'description',
+            'entreprise__nom',
+            'departement',
+            'salaire',
+            'type_contrat',
+            'horaires',
+            'date_publication',
+            'updated_at'
+        ).get(id=id)
+    except Annonce.DoesNotExist:
+        raise Http404("Annonce non trouvée")
+    
+    return JsonResponse(annonce)
+
