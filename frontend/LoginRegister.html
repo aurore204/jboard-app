@@ -7,7 +7,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  <script src="index.js"></script>
+  <!--<script src="index.js"></script>-->
   <style>
     html, body {
       height: 100%;
@@ -76,7 +76,7 @@
   <div class="container" style="margin-top: 200px;">
     <div class="card-panel">
       <h5>Connexion</h5>
-      <form action="/login" method="POST">
+      <form id="login-form">
         <div class="input-field">
           <input type="email" id="login-email" name="email" required>
           <label for="login-email">Email</label>
@@ -85,6 +85,16 @@
           <input type="password" id="login-password" name="password" required>
           <label for="login-password">Mot de passe</label>
         </div>
+
+        <div class="input-field">
+          <select id="user-type" required>
+            <option value="" disabled selected>Choisir un type de compte</option>
+            <option value="personne">Utilisateur</option>
+            <option value="entreprise">Entreprise</option>
+          </select>
+          <label>Type de compte</label>
+        </div>
+
         <button type="submit" class="btn blue">Se connecter</button>
       </form>
     </div>
@@ -95,7 +105,7 @@
       <div class="col s12 m6">
         <div class="card-panel">
           <h5>Inscription Standard</h5>
-          <form action="/register-standard" method="POST">
+          <form id="Inscription_Personne">
             <div class="input-field">
               <input type="text" id="nom-prenom" name="nom_prenom" required>
               <label for="nom-prenom">Nom Prénom</label>
@@ -108,7 +118,7 @@
               <input type="password" id="password-standard" name="password" required>
               <label for="password-standard">Mot de passe</label>
             </div>
-            <button type="submit" class="btn green">S'inscrire</button>
+            <button id="Personnes_Btn" type="submit" class="btn green">S'inscrire</button>
           </form>
         </div>
       </div>
@@ -116,7 +126,7 @@
       <div class="col s12 m6">
         <div class="card-panel">
           <h5>Inscription Entreprise</h5>
-          <form action="http://localhost:8000/myflashjob/api/personnes/" method="POST">
+          <form id="Inscription_Entreprise">
             <div class="input-field">
               <input type="text" id="nom-entreprise" name="nom_entreprise" required>
               <label for="nom-entreprise">Nom entreprise</label>
@@ -133,11 +143,114 @@
               <input type="password" id="password-entreprise" name="password" required>
               <label for="password-entreprise">Mot de passe</label>
             </div>
-            <button id="EntrepriseBtn" type="submit" class="btn orange">S'inscrire</button>
+            <button id="Entreprise_Btn" type="submit" class="btn orange">S'inscrire</button>
           </form>
         </div>
       </div>
     </div>
   </div>
+
+
+   <script>
+document.getElementById("Inscription_Entreprise").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const nom = document.getElementById("nom-entreprise").value;
+  const email = document.getElementById("email-contact").value;
+  const departement = document.getElementById("domaine").value;
+  const mot_de_passe = document.getElementById("password-entreprise").value;
+
+  const data = { nom, email, departement, mot_de_passe };
+
+  try {
+    const response = await fetch("http://localhost:8000/myflashjob/api/entreprises/create/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) throw new Error("Erreur réseau");
+
+    const result = await response.json();
+    alert("Entreprise créée avec succès, vous pouvez vous connecter !");
+    console.log(result);
+  } catch (error) {
+    console.error("Erreur :", error);
+    alert("Une erreur est survenue lors de l'inscription.");
+  }
+});
+
+document.getElementById("Inscription_Personne").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const nom = document.getElementById("nom-prenom").value;
+  const email = document.getElementById("email-standard").value;
+  const mot_de_passe = document.getElementById("password-standard").value;
+
+  const data = { nom, email, mot_de_passe };
+
+  try {
+    const response = await fetch("http://localhost:8000/myflashjob/api/personnes/create/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) throw new Error("Erreur réseau");
+
+    const result = await response.json();
+    alert("Compte utilisateur créée avec succès, vous pouvez vous connecter!");
+    console.log(result);
+  } catch (error) {
+    console.error("Erreur :", error);
+    alert("Une erreur est survenue lors de l'inscription.");
+  }
+});
+
+document.getElementById("login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("login-email").value;
+  const password = document.getElementById("login-password").value;
+  const type = document.getElementById("user-type").value; // <-- récupère le type
+
+  try {
+    const response = await fetch("http://localhost:8000/myflashjob/api/login/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, type }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      // Redirige selon le type d'utilisateur
+      if (type === "personne") {
+        window.location.href = `compte_utilisateur.html?id=${result.id}`;
+      } else {
+        window.location.href = `compte_entreprise.html?id=${result.id}`;
+      }
+    } else {
+      alert(result.error || "Erreur lors de la connexion");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("erreur: essayer un autre mail, mot de passe ou encore type d'user!");
+  }
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  var elems = document.querySelectorAll('select');
+  M.FormSelect.init(elems);
+});
+
+
+</script>
+
 </body>
 </html>
