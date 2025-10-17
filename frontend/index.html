@@ -13,8 +13,6 @@
     background-repeat: no-repeat;
     background-size: cover;}
     
-
-
     button {
       padding: 10px 20px;
       background-color: rgb(0, 162, 255);
@@ -34,12 +32,12 @@
 <body>
   <a>
     <button class="bouton-positionne" onclick="window.location.href='Candidatures.html';">Candidatures</button>
-    <button style="margin-left: 1000px;"  class="bouton-positionne" onclick="window.location.href='LoginRegister.html';">Login/Inscription</button>
+    <button id="log" style="margin-left: 1000px;"   class="bouton-positionne">Login/Inscription</button>
   </a>
 
 <style>
   .search-bar {
-    margin-top: 200px;
+    margin-top: 300px;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -96,8 +94,6 @@
     appearance: auto;
 }
 
-
-  
 
 </style>
 
@@ -253,4 +249,87 @@
   <div id="AnnoncesContainer"></div>
 </form>
 
+<script>
+const params1 = new URLSearchParams(window.location.search);
+const personneId = params1.get('personneId');
+const params2 = new URLSearchParams(window.location.search);
+const entrepriseId = params2.get('entrepriseId');
+
+
+
+document.getElementById('log').addEventListener('click', () => {
+    console.log("Bien détecté!");
+    if(personneId){
+        window.location.href = `compte_utilisateur.html?personneId=${personneId}`;
+    }
+    else if(entrepriseId){
+        window.location.href = `compte_entreprise.html?entrepriseId=${entrepriseId}`;
+    }
+    else {
+        window.location.href='LoginRegister.html';
+    }
+});
+
+// ---------- Annonces ----------
+
+
+if (personneId){
+   document.getElementById('loadAnnoncesBtn').addEventListener('click', () => {
+    fetch('http://localhost:8000/myflashjob/api/annonces/')
+    .then(response => response.json())
+    .then(data => {
+        const container = document.getElementById('AnnoncesContainer');
+        container.innerHTML = '';
+        data.forEach(annonce => {
+            const div = document.createElement('div');
+            div.innerHTML = `<h3>${annonce.intitule_emploi} chez ${annonce.entreprise__nom}</h3>
+                             <p><i>${annonce.departement}</i></p>
+                             <p>Type de contrat : ${annonce.type_contrat}</p>
+                             <button onclick="window.location.href='details.html?personneId=${personneId}&id=${annonce.id}';" type="button">Voir plus</button>`;
+            container.appendChild(div);
+        });
+    })
+    .catch(error => console.error('Erreur Annonces:', error));
+});
+
+} else if(entrepriseId){
+    document.getElementById('loadAnnoncesBtn').addEventListener('click', () => {
+    fetch('http://localhost:8000/myflashjob/api/annonces/')
+    .then(response => response.json())
+    .then(data => {
+        const container = document.getElementById('AnnoncesContainer');
+        container.innerHTML = '';
+        data.forEach(annonce => {
+            const div = document.createElement('div');
+            div.innerHTML = `<h3>${annonce.intitule_emploi} chez ${annonce.entreprise__nom}</h3>
+                             <p><i>${annonce.departement}</i></p>
+                             <p>Type de contrat : ${annonce.type_contrat}</p>
+                             <button onclick="window.location.href='details.html?entrepriseId=${entrepriseId}&id=${annonce.id}';" type="button">Voir plus</button>`;
+            container.appendChild(div);
+        });
+    })
+    .catch(error => console.error('Erreur Annonces:', error));
+});
+
+}else{
+document.getElementById('loadAnnoncesBtn').addEventListener('click', () => {
+    fetch('http://localhost:8000/myflashjob/api/annonces/')
+    .then(response => response.json())
+    .then(data => {
+        const container = document.getElementById('AnnoncesContainer');
+        container.innerHTML = '';
+        data.forEach(annonce => {
+            const div = document.createElement('div');
+            div.innerHTML = `<h3>${annonce.intitule_emploi} chez ${annonce.entreprise__nom}</h3>
+                             <p><i>${annonce.departement}</i></p>
+                             <p>Type de contrat : ${annonce.type_contrat}</p>
+                             <button onclick="window.location.href='details.html?id=${annonce.id}';" type="button">Voir plus</button>`;
+            container.appendChild(div);
+        });
+    })
+    .catch(error => console.error('Erreur Annonces:', error));
+});
+}
+
+</script>
 

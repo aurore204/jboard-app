@@ -12,4 +12,5 @@ urlpatterns = [
     path('api/personnes/<int:id>/', views.personnes_details_list, name='personnes_details_list'),
     path('api/entreprises/<int:id>/', views.entreprises_details_list, name='entreprises_details_list'),
     path('api/login/', views.login, name='login'),
+   # path('api/personnes/<int:id>/update/', views.update_personne, name='update_personne'),
 ]

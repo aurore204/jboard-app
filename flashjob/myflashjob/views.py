@@ -153,11 +153,12 @@ def personnes_details_list(request, id):
         personne = Personne.objects.values(
         'id',
         'nom',
+        'prenom',
         'email',
-        'departement',
+        'cv',
         'created_at',
         'updated_at'
-        ).get(id=id)
+    ).get(id=id)
     except Personne.DoesNotExist:
         raise Http404("Personnes non trouvée")
     

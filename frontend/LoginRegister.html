@@ -152,6 +152,7 @@
 
 
    <script>
+    
 document.getElementById("Inscription_Entreprise").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -230,9 +231,9 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     if (result.success) {
       // Redirige selon le type d'utilisateur
       if (type === "personne") {
-        window.location.href = `compte_utilisateur.html?id=${result.id}`;
+        window.location.href = `index.html?personneId=${result.id}`;
       } else {
-        window.location.href = `compte_entreprise.html?id=${result.id}`;
+        window.location.href = `index.html?entrepriseId=${result.id}`;
       }
     } else {
       alert(result.error || "Erreur lors de la connexion");
