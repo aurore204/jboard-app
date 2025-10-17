@@ -1,101 +1,110 @@
-from rest_framework import viewsets
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.hashers import check_password, make_password
-from django.contrib.auth.models import User
 import json
+from .models import Personne, Entreprise, Annonce, Candidature
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import check_password
+from django.shortcuts import redirect
+from rest_framework import viewsets
+from .serializers import PersonneSerializer, EntrepriseSerializer, AnnonceSerializer, CandidatureSerializer, AnnonceReduiteSerializer
 
-from .models import People, Companies, Annonces, Candidatures
-from .serializers import PeopleSerializer, CompaniesSerializer, AnnoncesSerializer, CandidaturesSerializer
-
-
-# --- API CRUD pour tes modèles ---
-class PeopleViewSet(viewsets.ModelViewSet):
-    queryset = People.objects.all()
-    serializer_class = PeopleSerializer
-
-
-class CompaniesViewSet(viewsets.ModelViewSet):
-    queryset = Companies.objects.all()
-    serializer_class = CompaniesSerializer
-
-
-class AnnoncesViewSet(viewsets.ModelViewSet):
-    queryset = Annonces.objects.all()
-    serializer_class = AnnoncesSerializer
-
-
-class CandidaturesViewSet(viewsets.ModelViewSet):
-    queryset = Candidatures.objects.all()
-    serializer_class = CandidaturesSerializer
-
-
-# --- API LOGIN ---
 @csrf_exempt
 def login(request):
-    if request.method != "POST":
-        return JsonResponse({"status": "error", "message": "Requête POST requise"})
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            email = data.get("email")
+            password = data.get("password")
+            type_user = data.get("type")  # "personne" ou "entreprise"
 
-    try:
-        data = json.loads(request.body)
-        email = data.get("email")
-        password = data.get("password")
+            if type_user == "personne":
+                from .models import Personne
+                user = Personne.objects.get(email=email)
+            elif type_user == "entreprise":
+                from .models import Entreprise
+                user = Entreprise.objects.get(email=email)
+            else:
+                return JsonResponse({"success": False, "error": "Type d'utilisateur invalide"})
 
-        # Vérifie dans People
-        people = People.objects.filter(email=email).first()
-        if people and check_password(password, people.password):
-            return JsonResponse({"status": "success", "id": people.id, "role": "people"})
+            if check_password(password, user.mot_de_passe):
+                return JsonResponse({"success": True, "id": user.id, "type": type_user})
+            else:
+                return JsonResponse({"success": False, "error": "Mot de passe incorrect"})
+        except (Personne.DoesNotExist, Entreprise.DoesNotExist):
+            return JsonResponse({"success": False, "error": "Utilisateur non trouvé"})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+    return JsonResponse({"success": False, "error": "Méthode non autorisée"})
 
-        # Vérifie dans Companies
-        companies = Companies.objects.filter(email=email).first()
-        if companies and check_password(password, companies.password):
-            return JsonResponse({"status": "success", "id": companies.id, "role": "companies"})
 
-        # Vérifie dans Admin (table User de Django)
-        admin = User.objects.filter(email=email).first()
-        if admin and admin.check_password(password):
-            return JsonResponse({"status": "success", "id": admin.id, "role": "admin"})
-    except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)})
+
 @csrf_exempt
-def register(request):
-    if request.method != "POST":
-        return JsonResponse({"status": "error", "message": "Requête POST requise"})
-
-    try:
-        data = json.loads(request.body)
-        role = data.get("role", "people")  # par défaut : people
-
-        # Enregistrement d’un People
-        if role == "people":
-            if People.objects.filter(email=data["email"]).exists():
-                return JsonResponse({"status": "error", "message": "Email déjà utilisé"})
-            people = People.objects.create(
-                first_name=data.get("first_name", ""),
-                last_name=data.get("last_name", ""),
+def create_entreprise(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            entreprise = Entreprise.objects.create(
+                nom=data["nom"],
                 email=data["email"],
-                password=make_password(data["password"]),
-                phone=data.get("phone", ""),
-                address=data.get("address", ""),
+                departement=data.get("departement", ""),
+                mot_de_passe=make_password(data["mot_de_passe"])
             )
-            return JsonResponse({"status": "success", "id": people.id, "role": "people"})
+            return JsonResponse({"message": "Entreprise créée avec succès", "id": entreprise.id})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+    return JsonResponse({"error": "Méthode non autorisée"}, status=405)
 
-        # Enregistrement d’une Company
-        elif role == "companies":
-            if Companies.objects.filter(email=data["email"]).exists():
-                return JsonResponse({"status": "error", "message": "Email déjà utilisé"})
-            companies = Companies.objects.create(
-                name=data.get("name", ""),
+@csrf_exempt
+def create_personnes(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            personne = Personne.objects.create(
+                nom=data["nom"],
                 email=data["email"],
-                password=make_password(data["password"]),
-                phone=data.get("phone", ""),
-                address=data.get("address", "")
+                mot_de_passe=make_password(data["mot_de_passe"])
             )
-            return JsonResponse({"status": "success", "id": companies.id, "role": "companies"})
+            return JsonResponse({"message": "Compte Utilisateur créée avec succès", "id": personne.id})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+    return JsonResponse({"error": "Méthode non autorisée"}, status=405)
 
-        else:
-            return JsonResponse({"status": "error", "message": "Rôle invalide"})
+class PersonneViewSet(viewsets.ModelViewSet):
+    queryset = Personne.objects.all()
+    serializer_class = PersonneSerializer
 
-    except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)})
-        return JsonResponse({"status": "error", "message": "Email ou mot de passe incorrect"})
+class EntrepriseViewSet(viewsets.ModelViewSet):
+    queryset = Entreprise.objects.all()
+    serializer_class = EntrepriseSerializer
+
+class AnnonceViewSet(viewsets.ModelViewSet):
+    queryset = Annonce.objects.all()
+    serializer_class = AnnonceSerializer  # par défaut
+
+    def perform_create(self, serializer):
+        # On récupère l'entreprise depuis le localStorage via le payload JS
+        entreprise_id = self.request.data.get('entreprise')
+        entreprise = Entreprise.objects.get(id=entreprise_id)
+        serializer.save(entreprise=entreprise)
+
+    def get_serializer_class(self):
+        entreprise_id = self.request.GET.get('entreprise_id')
+        if self.action == 'list' and not entreprise_id:
+            # Liste générale → réduite
+            return AnnonceReduiteSerializer
+        # Sinon → complète
+        return AnnonceSerializer
+
+    def get_queryset(self):
+        entreprise_id = self.request.GET.get('entreprise_id')
+        if entreprise_id:
+            return Annonce.objects.filter(entreprise_id=entreprise_id)
+        return Annonce.objects.all()
+
+
+
+ 
+
+class CandidatureViewSet(viewsets.ModelViewSet):
+    queryset = Candidature.objects.all()
+    serializer_class = CandidatureSerializer

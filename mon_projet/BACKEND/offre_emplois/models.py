@@ -1,91 +1,54 @@
 from django.db import models
-from django.contrib.auth.hashers import make_password, check_password
 
-
-class People(models.Model):
-    
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
+# Modèle Personne
+class Personne(models.Model):
+    nom = models.CharField(max_length=100)
+    prenom = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     cv = models.FileField(upload_to='cvs/')
-    phone = models.CharField(max_length=15)
-    address = models.CharField(max_length=255)
-    password = models.CharField(max_length=128,default='password')
+    mot_de_passe = models.CharField(max_length=128)  # pour stocker un hash de mot de passe
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def save(self, *args, **kwargs):
-        if not self.password.startswith('pbkdf2_'):
-            self.password = make_password(self.password)
-        super().save(*args, **kwargs)
-
-    class Meta:
-        db_table = 'people'  # Nom personnalisé dans la base
-
     def __str__(self):
-            return f"{self.first_name} {self.last_name} - {self.email} - {self.phone} - {self.address} - {self.password} - {self.cv.url if self.cv else 'No CV'} - Created at: {self.created_at} - Updated at: {self.updated_at}"
+        return f"{self.prenom} {self.nom}"
 
 
-class Companies(models.Model):
-    name = models.CharField(max_length=100)
+# Modèle Entreprise
+class Entreprise(models.Model):
+    nom = models.CharField(max_length=150)
     email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=15)
-    address = models.CharField(max_length=255)
-    password = models.CharField(max_length=128,default='password')
+    departement = models.CharField(max_length=100)
+    mot_de_passe = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def save(self, *args, **kwargs):
-        if not self.password.startswith('pbkdf2_'):
-            self.password = make_password(self.password)
-        super().save(*args, **kwargs)
-
-    class Meta:
-            db_table = 'companies'  # Nom personnalisé dans la base
     def __str__(self):
-            return f"{self.name} - {self.email} - {self.phone} - {self.address} - {self.password} - Created at: {self.created_at} - Updated at: {self.updated_at}"
+        return self.nom
 
 
-class Annonces(models.Model):
-    TYPE_CONTRAT_CHOICES = [
-        ('CDI', 'CDI'),
-        ('CDD', 'CDD'),
-        ('Stage', 'Stage'),
-        ('Freelance', 'Freelance'),
-    ]
-
-    title = models.CharField(max_length=100)
+# Modèle Annonce
+class Annonce(models.Model):
+    entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
+    intitule_emploi = models.CharField(max_length=200)
     description = models.TextField()
-    location = models.CharField(max_length=255)
+    departement = models.CharField(max_length=100)
     salaire = models.DecimalField(max_digits=10, decimal_places=2)
-    type_contrat = models.CharField(max_length=100, choices=TYPE_CONTRAT_CHOICES)
-    dateLimite = models.DateField()
-    datePublication = models.DateField(auto_now_add=True)
-    horaire_travail = models.CharField(max_length=100 , default='Temps plein')
-    companies = models.ForeignKey(Companies, on_delete=models.CASCADE, related_name='annonces')
-    created_at = models.DateTimeField(auto_now_add=True)
+    type_contrat = models.CharField(max_length=50)
+    horaires = models.CharField(max_length=100)
+    date_publication = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    class Meta:
-        db_table = 'annonces'  # Nom personnalisé dans la base
+
     def __str__(self):
-        return f"{self.title} - {self.description} - {self.location} - {self.salaire} - Companies: {self.companies.name} - dateLimite: {self.dateLimite} - datePublication: {self.datePublication} - horaire_travail: {self.horaire_travail} - Type de contrat: {self.type_contrat} - Created at: {self.created_at} - Updated at: {self.updated_at}"
+        return f"{self.intitule_emploi} - {self.entreprise.nom}"
 
-class Candidatures(models.Model):
-    STATUS_CHOICES = [
-        ('En attente', 'En attente'),
-        ('Acceptée', 'Acceptée'),
-        ('Refusée', 'Refusée'),
-    ]
 
-    people = models.ForeignKey(People, on_delete=models.CASCADE, related_name='candidatures')
-    annonces = models.ForeignKey(Annonces, on_delete=models.CASCADE, related_name='candidatures')
-    dateCandidature = models.DateField(auto_now_add=True)
-    status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='En attente')
-    emailsent = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+# Modèle Candidature
+class Candidature(models.Model):
+    personne = models.ForeignKey(Personne, on_delete=models.CASCADE)
+    annonce = models.ForeignKey(Annonce, on_delete=models.CASCADE)
+    date_candidature = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    class Meta:
-        db_table = 'candidatures'  # Nom personnalisé dans la base
-    def __str__(self):
-        return f"People: {self.people.first_name} {self.people.last_name} - Annonce: {self.annonces.title} - Date de candidature: {self.dateCandidature} - Status: {self.status} - Created at: {self.created_at} - Updated at: {self.updated_at}- Email Sent: {self.emailsent}"
 
+    def __str__(self):
+        return f"Candidature de {self.personne.prenom} {self.personne.nom} pour {self.annonce.intitule_emploi}"

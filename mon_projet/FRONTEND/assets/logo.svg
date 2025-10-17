@@ -1,0 +1,60 @@
+<svg width="400" height="80" viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient definitions -->
+  <defs>
+    <linearGradient id="lightningGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00A2FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0073e6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#333;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00A2FF;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background circle with gradient -->
+  <circle cx="40" cy="40" r="32" fill="url(#lightningGradient)" opacity="0.15"/>
+  <circle cx="40" cy="40" r="28" fill="none" stroke="url(#lightningGradient)" stroke-width="2" opacity="0.3"/>
+  
+  <!-- Main icon: Enhanced Lightning bolt -->
+  <g transform="translate(40, 40)">
+    <!-- Lightning bolt with gradient and glow -->
+    <path d="M-12,-18 L6,-18 L-3,3 L12,3 L-6,18 L-18,0 Z" 
+          fill="url(#lightningGradient)" 
+          stroke="#0073e6" 
+          stroke-width="1.5"
+          filter="url(#glow)"/>
+    
+    <!-- Sparkle effects around lightning -->
+    <g opacity="0.6">
+      <circle cx="-20" cy="-15" r="2" fill="#00A2FF"/>
+      <circle cx="20" cy="10" r="1.5" fill="#0073e6"/>
+      <circle cx="-15" cy="20" r="1" fill="#00A2FF"/>
+      <circle cx="25" cy="-10" r="1.5" fill="#0073e6"/>
+    </g>
+  </g>
+  
+  <!-- Enhanced Text with gradient -->
+  <text x="90" y="35" font-family="Arial, sans-serif" font-size="32" font-weight="900" fill="url(#textGradient)">
+    Flash
+  </text>
+  <text x="90" y="60" font-family="Arial, sans-serif" font-size="32" font-weight="900" fill="#00A2FF">
+    Job
+  </text>
+  
+  <!-- Enhanced Subtitle -->
+  <text x="90" y="72" font-family="Arial, sans-serif" font-size="12" font-weight="500" fill="#666" opacity="0.8">
+    Trouvez votre emploi en un éclair
+  </text>
+  
+  <!-- Decorative elements -->
+  <g opacity="0.1">
+    <rect x="85" y="25" width="200" height="3" rx="1.5" fill="url(#lightningGradient)"/>
+  </g>
+</svg>

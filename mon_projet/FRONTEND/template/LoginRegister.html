@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FlashJob</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to right, #ece9e6, #ffffff);
+    }
+
+    nav {
+      background-color: #9fa6ad;
+      padding: 0 20px;
+    }
+
+    nav  img {
+      height: 70px;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+
+    nav ul li a {
+      color: #fff ;
+      font-weight: 500;
+    }
+
+    .main-container {
+      max-width: 1200px;
+      margin: 50px auto;
+    }
+
+    .card-panel {
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      background-color: #fff;
+    }
+
+    h5 {
+      font-weight: 600;
+      color: #1976d2;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    button {
+      border-radius: 25px;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    .form-section {
+      margin-top: 40px;
+    }
+
+    .input-field label {
+      color: #1976d2;
+    }
+
+    .input-field input:focus + label {
+      color: #1976d2 !important;
+    }
+
+    .input-field input:focus {
+      border-bottom: 2px solid #1976d2 !important;
+      box-shadow: 0 1px 0 0 #1976d2 !important;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px 0;
+      background-color: #646b72;
+      color: #fff;
+      margin-top: 50px;
+      border-radius: 10px 10px 0 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="nav-wrapper container">
+      <a href="#" class="brand-logo">
+        <img src="../assets/logo.svg" alt="Logo FlashJob"> FlashJob
+      </a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="Candidatures.html">Candidatures</a></li>
+        <li><a href="LoginRegister.html">Login/Inscription</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container main-container">
+    <!-- Connexion -->
+    <div class="card-panel">
+      <h5>Connexion</h5>
+      <form id="login-form">
+        <div class="input-field">
+          <input type="email" id="login-email" name="email" required>
+          <label for="login-email">Email</label>
+        </div>
+        <div class="input-field">
+          <input type="password" id="login-password" name="password" required>
+          <label for="login-password">Mot de passe</label>
+        </div>
+        <div class="input-field">
+          <select id="user-type" required>
+            <option value="" disabled selected>Choisir un type de compte</option>
+            <option value="personne">Utilisateur</option>
+            <option value="entreprise">Entreprise</option>
+          </select>
+          <label>Type de compte</label>
+        </div>
+        <button type="submit" class="btn blue">Se connecter</button>
+      </form>
+    </div>
+
+    <!-- Formulaires d'inscription -->
+    <div class="row form-section">
+      <!-- Inscription Utilisateur -->
+      <div class="col s12 m6">
+        <div class="card-panel">
+          <h5>Inscription Utilisateur</h5>
+          <form id="Inscription_Personne">
+            <div class="input-field">
+              <input type="text" id="nom-prenom" name="nom_prenom" required>
+              <label for="nom-prenom">Nom Prénom</label>
+            </div>
+            <div class="input-field">
+              <input type="email" id="email-standard" name="email" required>
+              <label for="email-standard">Email</label>
+            </div>
+            <div class="input-field">
+              <input type="password" id="password-standard" name="password" required>
+              <label for="password-standard">Mot de passe</label>
+            </div>
+            <button id="Personnes_Btn" type="submit" class="btn green">S'inscrire</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Inscription Entreprise -->
+      <div class="col s12 m6">
+        <div class="card-panel">
+          <h5>Inscription Entreprise</h5>
+          <form id="Inscription_Entreprise">
+            <div class="input-field">
+              <input type="text" id="nom-entreprise" name="nom_entreprise" required>
+              <label for="nom-entreprise">Nom entreprise</label>
+            </div>
+            <div class="input-field">
+              <input type="email" id="email-contact" name="email_contact" required>
+              <label for="email-contact">Mail contact</label>
+            </div>
+            <div class="input-field">
+              <input type="text" id="domaine" name="domaine">
+              <label for="domaine">Domaine d'activité</label>
+            </div>
+            <div class="input-field">
+              <input type="password" id="password-entreprise" name="password" required>
+              <label for="password-entreprise">Mot de passe</label>
+            </div>
+            <button id="Entreprise_Btn" type="submit" class="btn orange">S'inscrire</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    FlashJob 
+  </footer>
+
+  
+
+   <script>
+document.getElementById("Inscription_Entreprise").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const nom = document.getElementById("nom-entreprise").value;
+  const email = document.getElementById("email-contact").value;
+  const departement = document.getElementById("domaine").value;
+  const mot_de_passe = document.getElementById("password-entreprise").value;
+
+  const data = { nom, email, departement, mot_de_passe };
+
+  try {
+    const response = await fetch("http://localhost:8000/api/entreprises/create/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) throw new Error("Erreur réseau");
+
+    const result = await response.json();
+    alert("Entreprise créée avec succès, vous pouvez vous connecter !");
+    console.log(result);
+  } catch (error) {
+    console.error("Erreur :", error);
+    alert("Une erreur est survenue lors de l'inscription.");
+  }
+});
+
+document.getElementById("Inscription_Personne").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const nom = document.getElementById("nom-prenom").value;
+  const email = document.getElementById("email-standard").value;
+  const mot_de_passe = document.getElementById("password-standard").value;
+
+  const data = { nom, email, mot_de_passe };
+
+  try {
+    const response = await fetch("http://localhost:8000/api/personnes/create/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) throw new Error("Erreur réseau");
+
+    const result = await response.json();
+    alert("Compte utilisateur créée avec succès, vous pouvez vous connecter!");
+    console.log(result);
+  } catch (error) {
+    console.error("Erreur :", error);
+    alert("Une erreur est survenue lors de l'inscription.");
+  }
+});
+
+document.getElementById("login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("login-email").value;
+  const password = document.getElementById("login-password").value;
+  const type = document.getElementById("user-type").value; // <-- récupère le type
+
+  try {
+    const response = await fetch("http://localhost:8000/api/login/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, type }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      // Redirige selon le type d'utilisateur
+      if (type === "personne") {
+          localStorage.setItem("personneId", result.id);
+          window.location.href = `compte_utilisateur.html?id=${result.id}`;
+      } else {
+          localStorage.setItem("entrepriseId", result.id);
+          window.location.href = `compte_entreprise.html?id=${result.id}`;
+      }
+    } else {
+      alert(result.error || "Erreur lors de la connexion");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("erreur: essayer un autre mail, mot de passe ou encore type d'user!");
+  }
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  var elems = document.querySelectorAll('select');
+  M.FormSelect.init(elems);
+});
+
+
+</script>
+
+</body>
+</html>

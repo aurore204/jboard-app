@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Annonces - FlashJob</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/annonnces.css">
+</head>
+
+<body style="background-color: white;">
+    <nav class="nav-wrapper grey darken-3">
+        <div class="container">
+            <a href="#" class="brand-logo" style="display: flex; align-items: center;">
+                <img src="../assets/logo.svg" alt="FlashJob Logo" style="height: 50px; margin-right: 10px;">
+                
+            </a>
+            <ul class="right">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="LoginRegister.html">Déconnexion</a></li>
+            </ul>
+        </div>
+    </nav>
+     
+    <div class="container" style="margin-top: 50px;">
+        <div class="row">
+            <div class="col s12">
+                <h2>Gestion de vos annonces</h2>
+                <p>Bienvenue dans votre espace entreprise !</p>
+
+                <div class="card">
+                    <div class="card-content">
+                        <span class="card-title">Créer une nouvelle annonce</span>
+                        <button class="btn blue modal-trigger" href="#createAnnonceModal">+ Nouvelle annonce</button>
+                    </div>
+                </div>
+
+                <div id="createAnnonceModal" class="modal">
+                    <div class="modal-content">
+                        <h4>Créer une annonce</h4>
+                        <form id="createAnnonceForm">
+                        <div class="input-field">
+                            <input id="intitule_emploi" type="text" required>
+                            <label for="intitule_emploi">Intitulé de l'emploi</label>
+                        </div>
+                        <div class="input-field">
+                            <textarea id="description" class="materialize-textarea" required></textarea>
+                            <label for="description">Description</label>
+                        </div>
+                        <div class="input-field">
+                            <input id="departement" type="text" required>
+                            <label for="departement">Département</label>
+                        </div>
+                        <div class="input-field">
+                            <input id="salaire" type="number" step="0.01" required>
+                            <label for="salaire">Salaire</label>
+                        </div>
+                        <div class="input-field">
+                            <input id="type_contrat" type="text" required>
+                            <label for="type_contrat">Type de contrat</label>
+                        </div>
+                        <div class="input-field">
+                            <input id="horaires" type="text" required>
+                            <label for="horaires">Horaires</label>
+                        </div>
+                        <button type="submit" class="btn blue">Créer</button>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#!" class="modal-close waves-effect waves-red btn-flat " onclick="closePopup('#createAnnonceModal')">Annuler</a>
+                </div>
+            </div>
+             <div id="EditAnnonceModal" class="modal">
+                    <div class="modal-content">
+                        <h4>Modifier une annonce</h4>
+                        <form id="EditAnnonceForm">
+                        <div class="input-field">
+                            <input id="Editintitule_emploi" type="text" required>
+                            <label for="Editintitule_emploi">Intitulé de l'emploi</label>
+                        </div>
+                        <div class="input-field">
+                            <textarea id="Editdescription" class="materialize-textarea" required></textarea>
+                            <label for="Editdescription">Description</label>
+                        </div>
+                        <div class="input-field">
+                            <input id="Editdepartement" type="text" required>
+                            <label for="Editdepartement">Département</label>
+                        </div>
+                        <div class="input-field">
+                            <input id="EditSalaire" type="number" step="0.01" required>
+                            <label for="EditSalaire">Salaire</label>
+                        </div>
+                        <div class="input-field">
+                            <input id="Edittype_contrat" type="text" required>
+                            <label for="type_contrat">Type de contrat</label>
+                        </div>
+                        <div class="input-field">
+                            <input id="Edithoraires" type="text" required>
+                            <label for="Edithoraires">Horaires</label>
+                        </div>
+                        <button type="submit" class="btn green" href="#EditAnnonceModal">Modifier</button>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#!" class="modal-close waves-effect waves-red btn-flat " onclick="closePopup('#createAnnonceModal')">Annuler</a>
+                </div>
+            </div>
+
+                <div class="card">
+                    <div class="card-content">
+                        <span class="card-title">Vos annonces actives</span>
+                        
+<!-- Tableau des annonces -->
+                        <div class="container table-container">
+                        <table class="table table-striped table-hover shadow rounded bg-white">
+                            <thead class="table-primary">
+                            <tr>
+                                <th>intitule_emploi</th>
+                                <th>Description</th>
+                                <th>Département</th>
+                                <th>Salaire</th>
+                                <th>Type de contrat</th>
+                                <th>Horaires</th>
+                                <th>Date de publication</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="AnnoncesContainer">
+                            <!-- Les annonces chargées via JS apparaissent ici -->
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <script>
+
+// URL de l'API (remplacez par l'URL de votre API)
+const entrepriseId = localStorage.getItem("entrepriseId");
+const apiUrl = `http://127.0.0.1:8000/api/annonces/?entreprise_id=${entrepriseId}`; // Exemple d'URL
+// Fonction pour récupérer les données
+async function fetchData() {
+  try {
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erreur HTTP : ${response.status}`);
+    }
+    const data = await response.json(); // Conversion en JSON
+    populateTable(data); // Appel de la fonction pour remplir le tableau
+  } catch (error) {
+    console.error('Erreur lors de la récupération des données :', error);
+  }
+}
+
+// Fonction pour remplir le tableau HTML
+function populateTable(data) {
+  const tableBody = document.querySelector('#AnnoncesContainer');
+  tableBody.innerHTML = ''; // Réinitialise le contenu du tableau
+
+  data.forEach((item) => {
+    const row = document.createElement('tr');
+
+    // Création des cellules
+
+    row.innerHTML = `
+      <td>${item.intitule_emploi}</td>
+      <td>${item.description}</td>
+      <td>${item.departement}</td>
+      <td>${item.salaire}</td>
+      <td>${item.type_contrat}</td>
+      <td>${item.horaires}</td>
+      <td>${new Date(item.date_publication).toLocaleDateString()}</td> <!-- Formatage de la date en français -->
+      <td>
+        <button class="btn-small blue lighten-1" onclick="editAnnonce(${item.id})">
+          <i class="material-icons">edit</i>
+        </button>
+        <button class="btn-small red darken-1" onclick="deleteAnnonce(${item.id})">
+          <i class="material-icons">delete</i>
+        </button>
+      </td>
+    `;
+
+
+    // Ajout de la ligne au tableau
+    tableBody.appendChild(row);
+  });
+}
+
+// Appel de la fonction pour récupérer les données
+fetchData();
+// Sélection de la modal
+const modalElem = document.querySelector('#EditAnnonceModal');
+const modalInstance = M.Modal.init(modalElem);// on initie le modal
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const elems = document.querySelectorAll('.modal');// on sélectionne les modals
+    M.Modal.init(elems);
+
+    const form = document.getElementById('CreateAnnonceForm');// on sélectionne le formulaire de création 
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const entrepriseId = localStorage.getItem('entrepriseId'); // récupère l'id de l'entreprise
+      const payload = {//le payload permet d'envoyer les données au format JSON
+        intitule_emploi: document.getElementById('intitule_emploi').value,
+        description: document.getElementById('description').value,
+        departement: document.getElementById('departement').value,
+        salaire: document.getElementById('salaire').value,
+        type_contrat: document.getElementById('type_contrat').value,
+        horaires: document.getElementById('horaires').value,
+        entreprise: entrepriseId
+      };
+
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/annonces/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },// on précise qu'on envoie du JSON
+          body: JSON.stringify(payload)// on convertit le payload en JSON
+        });
+
+        if (!response.ok) throw new Error('Erreur lors de la création de l\'annonce');
+
+        const data = await response.json();// on récupère la réponse de l'API
+        console.log('Annonce créée avec succès :', data);
+        modalInstance.close(); // ferme la modal après création
+        fetchData(); // recharge les données du tableau
+        M.toast({html: 'Annonce créée avec succès !', classes: 'green'});
+        location.reload(); // ou actualiser le tableau dynamiquement
+      } catch (err) {
+        M.toast({html: err.message, classes: 'red'});
+      }
+    });
+  });
+
+  //fonction pou modifier une annonce
+function editAnnonce(id) {
+    
+    const modal = M.Modal.getInstance(document.getElementById("EditAnnonceModal"));//
+    modal.open();
+
+  // Récupérer les données existantes de l'annonce
+  fetch(`http://127.0.0.1:8000/api/annonces/${id}/`)
+    .then((response) => response.json())
+    .then((data) => {
+      document.getElementById('Editintitule_emploi').value = data.intitule_emploi;
+      document.getElementById('Editdescription').value = data.description;
+      document.getElementById('Editdepartement').value = data.departement;
+      document.getElementById('Editsalaire').value = data.salaire;
+      document.getElementById('Edittype_contrat').value = data.type_contrat;
+      document.getElementById('Edithoraires').value = data.horaires;
+
+      M.updateTextFields(); // pour rafraîchir les labels
+    });
+
+  // Quand on soumet, on met à jour l’annonce
+  const form = document.getElementById('EditAnnonceForm');
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+
+    const payload = {
+      intitule_emploi: document.getElementById('Editintitule_emploi').value,
+      description: document.getElementById('Editdescription').value,
+      departement: document.getElementById('Editdepartement').value,
+      salaire: document.getElementById('Editsalaire').value,
+      type_contrat: document.getElementById('Edittype_contrat').value,
+      horaires: document.getElementById('Edithoraires').value,
+    };
+
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/annonces/${id}/`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) throw new Error("Erreur lors de la mise à jour");
+      M.toast({ html: "Annonce modifiée avec succès", classes: "green" });
+      modal.close();
+      fetchData(); // recharge le tableau
+    } catch (error) {
+      M.toast({ html: error.message, classes: "red" });
+    }
+  };
+}
+
+//  Supprimer une annonce
+async function deleteAnnonce(id) {
+  if (!confirm("Voulez-vous vraiment supprimer cette annonce ?")) return;
+
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/api/annonces/${id}/`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) throw new Error("Erreur lors de la suppression");
+    M.toast({ html: "Annonce supprimée", classes: "green" });
+    fetchData(); // recharge la liste
+  } catch (error) {
+    M.toast({ html: error.message, classes: "red" });
+  }
+}
+
+
+    </script>
+</body>
+
+</html>
