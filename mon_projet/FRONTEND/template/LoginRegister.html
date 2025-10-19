@@ -9,74 +9,53 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <style>
     html, body {
+      height: 100%;
       margin: 0;
       padding: 0;
-      font-family: 'Roboto', sans-serif;
-      background: linear-gradient(to right, #ece9e6, #ffffff);
     }
+    body {
+      background: 
+    linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)),
+    url('../assets/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  background-position: top;/* Ajuste la position verticale de l'image de fond */
 
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+    }
     nav {
       background-color: #9fa6ad;
-      padding: 0 20px;
+      padding: 10px 20px;
     }
-
+ 
     nav  img {
-      height: 70px;
+      height: 300px;
       vertical-align: middle;
       margin-right: 10px;
     }
-
+ 
     nav ul li a {
       color: #fff ;
       font-weight: 500;
     }
-
-    .main-container {
-      max-width: 1200px;
-      margin: 50px auto;
+    .bouton-positionne {
+      position: absolute;
+      top: 100px;
+      left: 200px;
     }
-
-    .card-panel {
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      background-color: #fff;
-    }
-
-    h5 {
-      font-weight: 600;
-      color: #1976d2;
-      margin-bottom: 25px;
-      text-align: center;
-    }
-
     button {
-      border-radius: 25px;
-      font-weight: 600;
-      transition: 0.3s;
+      padding: 10px 20px;
+      background-color: rgb(0, 162, 255);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
-
-    button:hover {
-      transform: scale(1.05);
-    }
-
     .form-section {
-      margin-top: 40px;
+      margin-top: 50px;
     }
-
-    .input-field label {
-      color: #1976d2;
-    }
-
-    .input-field input:focus + label {
-      color: #1976d2 !important;
-    }
-
-    .input-field input:focus {
-      border-bottom: 2px solid #1976d2 !important;
-      box-shadow: 0 1px 0 0 #1976d2 !important;
-    }
-
     footer {
       text-align: center;
       padding: 20px 0;
@@ -89,23 +68,40 @@
 </head>
 <body>
 
-  <!-- Navbar -->
-  <nav>
-    <div class="nav-wrapper container">
-      <a href="#" class="brand-logo">
-        <img src="../assets/logo.svg" alt="Logo FlashJob"> FlashJob
-      </a>
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li><a href="Candidatures.html">Candidatures</a></li>
-        <li><a href="LoginRegister.html">Login/Inscription</a></li>
-      </ul>
+ <a href="index.html">
+    <div style="
+      position: absolute;
+      top: 0px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      height: 80px;
+      z-index: 10;
+    ">
     </div>
-  </nav>
-
-  <div class="container main-container">
-    <!-- Connexion -->
-    <div class="card-panel">
-      <h5>Connexion</h5>
+  </a>
+  
+   <a href="index.html">
+    <div style="
+      position: absolute;
+      top: 0px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      height: 80px;
+      z-index: 10;
+    ">
+    </div>
+  </a>
+    <a>
+      <button class="bouton-positionne" onclick="window.location.href='index.html';">Accueil</button>
+      <button style="margin-left: 1000px;" class="bouton-positionne" onclick="window.location.href='LoginRegister.html';">Deconnexion</button>
+    </a>
+    <br><br><br><br><br><br><br><br><br><br>
+    <div class="container main-container">
+      <!-- Connexion -->
+      <div class="card-panel">
+        <h5>Connexion</h5>
       <form id="login-form">
         <div class="input-field">
           <input type="email" id="login-email" name="email" required>

@@ -8,20 +8,87 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/annonnces.css">
 </head>
+ <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: 
+    linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)),
+    url('../assets/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  background-position: top;/* Ajuste la position verticale de l'image de fond */
 
-<body style="background-color: white;">
-    <nav class="nav-wrapper grey darken-3">
-        <div class="container">
-            <a href="#" class="brand-logo" style="display: flex; align-items: center;">
-                <img src="../assets/logo.svg" alt="FlashJob Logo" style="height: 50px; margin-right: 10px;">
-                
-            </a>
-            <ul class="right">
-                <li><a href="index.html">Accueil</a></li>
-                <li><a href="LoginRegister.html">Déconnexion</a></li>
-            </ul>
-        </div>
-    </nav>
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+    nav {
+      background-color: #9fa6ad;
+      padding: 10px 20px;
+    }
+ 
+    nav  img {
+      height: 300px;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+ 
+    nav ul li a {
+      color: #fff ;
+      font-weight: 500;
+    }
+    .bouton-positionne {
+      position: absolute;
+      top: 100px;
+      left: 200px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: rgb(0, 162, 255);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .form-section {
+      margin-top: 50px;
+    }
+  </style>
+<body >
+  <a href="index.html">
+    <div style="
+      position: absolute;
+      top: 0px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      height: 80px;
+      z-index: 10;
+    ">
+    </div>
+  </a>
+  
+   <a href="index.html">
+    <div style="
+      position: absolute;
+      top: 0px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      height: 80px;
+      z-index: 10;
+    ">
+    </div>
+  </a>
+    <a>
+      <button class="bouton-positionne" onclick="window.location.href='index.html';">Accueil</button>
+      <button style="margin-left: 1000px;" class="bouton-positionne" onclick="window.location.href='LoginRegister.html';">Deconnexion</button>
+    </a>
+    <br><br><br><br><br><br><br>
      
     <div class="container" style="margin-top: 50px;">
         <div class="row">
@@ -32,11 +99,11 @@
                 <div class="card">
                     <div class="card-content">
                         <span class="card-title">Créer une nouvelle annonce</span>
-                        <button class="btn blue modal-trigger" href="#createAnnonceModal">+ Nouvelle annonce</button>
+                        <button class="btn blue modal-trigger" href="#CreateAnnonceModal">+ Nouvelle annonce</button>
                     </div>
                 </div>
 
-                <div id="createAnnonceModal" class="modal">
+                <div id="CreateAnnonceModal" class="modal">
                     <div class="modal-content">
                         <h4>Créer une annonce</h4>
                         <form id="createAnnonceForm">
@@ -69,7 +136,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <a href="#!" class="modal-close waves-effect waves-red btn-flat " onclick="closePopup('#createAnnonceModal')">Annuler</a>
+                        <a href="#!" class="modal-close waves-effect waves-red btn-flat " onclick="closePopup('#CreateAnnonceModal')">Annuler</a>
                 </div>
             </div>
              <div id="EditAnnonceModal" class="modal">
@@ -89,7 +156,7 @@
                             <label for="Editdepartement">Département</label>
                         </div>
                         <div class="input-field">
-                            <input id="EditSalaire" type="number" step="0.01" required>
+                            <input id="EditSalaire" type="text" step="0.1" required>
                             <label for="EditSalaire">Salaire</label>
                         </div>
                         <div class="input-field">
@@ -105,7 +172,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <a href="#!" class="modal-close waves-effect waves-red btn-flat " onclick="closePopup('#createAnnonceModal')">Annuler</a>
+                        <a href="#!" class="modal-close waves-effect waves-red btn-flat " onclick="closePopup('#EditAnnonceModal')">Annuler</a>
                 </div>
             </div>
 
@@ -142,9 +209,8 @@
 
     <script>
 
-// URL de l'API (remplacez par l'URL de votre API)
 const entrepriseId = localStorage.getItem("entrepriseId");
-const apiUrl = `http://127.0.0.1:8000/api/annonces/?entreprise_id=${entrepriseId}`; // Exemple d'URL
+const apiUrl = `http://127.0.0.1:8000/api/annonces/?entreprise_id=${entrepriseId}`; 
 // Fonction pour récupérer les données
 async function fetchData() {
   try {
@@ -173,8 +239,10 @@ function populateTable(data) {
   data.forEach((item) => {
     const row = document.createElement('tr');
 
-    // Création des cellules
+    // Fonction pour rediriger vers la liste des candidats
+    
 
+       // Création des cellules
     row.innerHTML = `
       <td>${item.intitule_emploi}</td>
       <td>${item.description}</td>
@@ -185,14 +253,16 @@ function populateTable(data) {
       <td>${new Date(item.date_publication).toLocaleDateString()}</td> <!-- Formatage de la date en français -->
       <td>
         <button class="btn-small blue lighten-1" onclick="editAnnonce(${item.id})">
-          <i class="material-icons">edit</i>
+          <i class="material-icons">modifier</i>
         </button>
         <button class="btn-small red darken-1" onclick="deleteAnnonce(${item.id})">
-          <i class="material-icons">delete</i>
+          <i class="material-icons">supprimer</i>
+        </button>
+        <button class="btn-small grey darken-1" onclick="myfunction(${item.id})">
+          <i class="material-icons">voir candidats</i>
         </button>
       </td>
     `;
-
 
     // Ajout de la ligne au tableau
     tableBody.appendChild(row);
@@ -201,15 +271,19 @@ function populateTable(data) {
 
 // Appel de la fonction pour récupérer les données
 fetchData();
+// Fonction pour rediriger vers la liste des candidats
+  function myfunction(annonceId) {
+    window.location.href = `liste_candidat_annonces.html?annonce_id=${annonceId}`;
+  }
 // Sélection de la modal
-const modalElem = document.querySelector('#EditAnnonceModal');
+const modalElem = document.querySelector('#CreateAnnonceModal');
 const modalInstance = M.Modal.init(modalElem);// on initie le modal
 
   document.addEventListener('DOMContentLoaded', function() {
     const elems = document.querySelectorAll('.modal');// on sélectionne les modals
     M.Modal.init(elems);
 
-    const form = document.getElementById('CreateAnnonceForm');// on sélectionne le formulaire de création 
+    const form = document.getElementById('createAnnonceForm');// on sélectionne le formulaire de création 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -245,7 +319,7 @@ const modalInstance = M.Modal.init(modalElem);// on initie le modal
     });
   });
 
-  //fonction pou modifier une annonce
+  //fonction pour modifier une annonce
 function editAnnonce(id) {
     
     const modal = M.Modal.getInstance(document.getElementById("EditAnnonceModal"));//
@@ -258,7 +332,7 @@ function editAnnonce(id) {
       document.getElementById('Editintitule_emploi').value = data.intitule_emploi;
       document.getElementById('Editdescription').value = data.description;
       document.getElementById('Editdepartement').value = data.departement;
-      document.getElementById('Editsalaire').value = data.salaire;
+      document.getElementById('EditSalaire').value = data.salaire;
       document.getElementById('Edittype_contrat').value = data.type_contrat;
       document.getElementById('Edithoraires').value = data.horaires;
 
@@ -267,19 +341,22 @@ function editAnnonce(id) {
 
   // Quand on soumet, on met à jour l’annonce
   const form = document.getElementById('EditAnnonceForm');
-  form.onsubmit = async (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    const payload = {
-      intitule_emploi: document.getElementById('Editintitule_emploi').value,
+    const EntrepriseId = localStorage.getItem('entrepriseId'); // récupère l'id de l'entreprise
+    const payload = {//le payload permet d'envoyer les données au format JSON 
+      intitule_emploi: document.getElementById('Editintitule_emploi').value,//ici on récupère les valeurs des champs et on les envoie dans le payload
       description: document.getElementById('Editdescription').value,
       departement: document.getElementById('Editdepartement').value,
-      salaire: document.getElementById('Editsalaire').value,
+      salaire: document.getElementById('EditSalaire').value,
       type_contrat: document.getElementById('Edittype_contrat').value,
       horaires: document.getElementById('Edithoraires').value,
+      entreprise: EntrepriseId
     };
 
     try {
+      console.log("Payload envoyé :", payload);
+
       const response = await fetch(`http://127.0.0.1:8000/api/annonces/${id}/`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -293,7 +370,7 @@ function editAnnonce(id) {
     } catch (error) {
       M.toast({ html: error.message, classes: "red" });
     }
-  };
+  });
 }
 
 //  Supprimer une annonce

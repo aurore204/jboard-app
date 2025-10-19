@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 import json
+from rest_framework.decorators import api_view
 from .models import Personne, Entreprise, Annonce, Candidature
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password
@@ -102,9 +103,14 @@ class AnnonceViewSet(viewsets.ModelViewSet):
         return Annonce.objects.all()
 
 
-
- 
-
 class CandidatureViewSet(viewsets.ModelViewSet):
     queryset = Candidature.objects.all()
     serializer_class = CandidatureSerializer
+@api_view(['GET'])
+def liste_candidat_annonces(request, annonce_id):
+    try:
+        candidatures = Candidature.objects.filter(annonce_id=annonce_id)
+        serializer = CandidatureSerializer(candidatures, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

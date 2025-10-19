@@ -47,8 +47,9 @@ class Annonce(models.Model):
 class Candidature(models.Model):
     personne = models.ForeignKey(Personne, on_delete=models.CASCADE)
     annonce = models.ForeignKey(Annonce, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=[('en_attente', 'En attente'), ('acceptee', 'Acceptée'), ('refusee', 'Refusée')],default='en_attente')
     date_candidature = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Candidature de {self.personne.prenom} {self.personne.nom} pour {self.annonce.intitule_emploi}"
+        return f"Candidature de {self.personne.prenom} {self.personne.nom} pour {self.annonce.intitule_emploi} pour la date {self.date_candidature} pour status {self.status}"

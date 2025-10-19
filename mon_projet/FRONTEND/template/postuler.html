@@ -1,32 +1,112 @@
 <!doctype html>
 <html lang="fr">
-
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>FlashJob - Candidatures</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <link rel="stylesheet" href="/static/css/style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Compte Entreprise - FlashJob</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-image: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0)), url('../assets/background.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    .bouton-positionne {
+      position: absolute;
+      top: 100px;
+      left: 200px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: rgb(0, 162, 255);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .form-section {
+      margin-top: 50px;
+    }
+  </style>
 </head>
-
 <body>
-    <a>
-        <button class="bouton-positionne" onclick="window.location.href='/';">
-            Retour à l'accueil
-        </button>
-    </a>
+  <a>
+    <button class="bouton-positionne" onclick="window.location.href='Historique.html';">Historique</button>
+    <button style="margin-left: 1000px;" class="bouton-positionne" onclick="window.location.href='LoginRegister.html';">Login/Inscription</button>
+  </a>
 
-    <div class="container" style="margin-top: 200px;">
-        <div class="card-panel">
-            <h4>Mes Candidatures</h4>
-            <p>Liste de vos candidatures...</p>
-            <button class="btn blue" onclick="window.location.href='/';">
-                Rechercher des offres
-            </button>
-        </div>
+  <div class="container" style="margin-top: 300px;">
+    <div class="card-panel">
+      <h5>Vos Informations</h5>
+      <form>
+      <label for="nom">Nom :</label>
+      <input type="text" id="nom" name="nom" value="">
+      <label for="Prénom">Prénom:</label>
+      <input type="text" id="prenom" name="nom" value="">
+      <label for="Email">Email :</label>
+      <input type="text" id="email" name="nom" value=""><br>
+      <label for="CV">CV :</label>
+      <input type="file" id="cv" name="nom" value=""><br>
+
+
+      </form>
     </div>
-</body>
+  <div style="text-align:center; max-width:800px; margin: auto;">
+   <button id="confirmation" class="bouton-bas" type="submit">Confirmer mes informations et postuler</button>
+  </div>
+  <script>
+  const params = new URLSearchParams(window.location.search);
+  const compteId = params.get('id');
 
+  // Charger les données de la personne
+  if (compteId) {
+    fetch(`http://localhost:8000/api/personnes/${compteId}/`)
+      .then(response => response.json())
+      .then(personne => {
+        document.getElementById('nom').value = personne.nom;
+        document.getElementById('prenom').value = personne.prenom;
+        document.getElementById('email').value = personne.email;
+      })
+      .catch(error => console.error('Erreur chargement personne:', error));
+  }
+
+  // Quand on clique sur "Confirmer"
+  document.getElementById('confirmation').addEventListener('click', async (event) => {
+  event.preventDefault();
+
+  const formData = new FormData();
+  formData.append('nom', document.getElementById('nom').value);
+  formData.append('prenom', document.getElementById('prenom').value);
+  formData.append('email', document.getElementById('email').value);
+
+  const cvFile = document.getElementById('cv').files[0];
+  if (cvFile) formData.append('cv', cvFile);
+
+  try {
+    const response = await fetch(`http://localhost:8000/api/personnes/${compteId}/`, {
+      method: 'PATCH', // PUT + FormData pose problème avec Django -> on utilisera POST
+      body: formData
+    });
+
+    if (response.ok) {
+      alert("Informations mises à jour");
+    } else {
+      alert("Erreur lors de la mise à jour.");
+    }
+  } catch (error) {
+    alert("Erreur réseau.");
+  }
+});
+
+</script>
+
+
+</body>
 </html>

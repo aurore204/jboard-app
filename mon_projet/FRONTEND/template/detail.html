@@ -3,73 +3,41 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FlashJob</title>
+  <title>FlashJob - Détails de l'annonce</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <style>
-    body{background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)), url('background.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;}
-    
-    button {
-      padding: 10px 20px;
-      background-color: rgb(0, 162, 255);
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .bouton-positionne {
-      position: absolute;
-      top: 100px;
-      left: 200px;
-    }
-
-  </style>
-</head>
-<body>
-  <a>
-    <button class="bouton-positionne" onclick="window.location.href='Candidatures.html';">Candidatures</button>
-    <button style="margin-left: 1000px;"  class="bouton-positionne" onclick="window.location.href='LoginRegister.html';">Login/Inscription</button>
-  </a>
-<style>
-  html, body {
+    html, body {
       height: 100%;
       margin: 0;
       padding: 0;
     }
-
     body {
-      background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)), url('background.jpg');
+      background-image: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0)), url('../assets/background.jpg');
       background-repeat: no-repeat;
       background-size: cover;
     }
-
-    .top-buttons {
+    nav {
+      background-color: #9fa6ad;
+      padding: 0 20px;
+    }
+ 
+    nav  img {
+      height: 300px;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+ 
+    nav ul li a {
+      color: #fff ;
+      font-weight: 500;
+    }
+    .bouton-positionne {
       position: absolute;
-      top: 20px;
-      left: 20px;
-      z-index: 10;
+      top: 100px;
+      left: 200px;
     }
-
-    .top-buttons button {
-      margin-right: 20px;
-    }
-
-    .header {
-      text-align: center;
-      margin-top: 320px;
-      font-size: 2rem;
-      font-weight: bold;
-      color: gold;
-    }
-
-    .header i {
-      color: gold;
-      margin: 10px;
-    }
-
     button {
       padding: 10px 20px;
       background-color: rgb(0, 162, 255);
@@ -78,12 +46,13 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    .bouton-positionne {
-      position: absolute;
-      top: 100px;
-      left: 200px;
+    .form-section {
+      margin-top: 50px;
     }
-    .bouton-bas{
+    
+    .header { text-align: center; margin-top: 200px; font-size: 2rem; font-weight: bold; color: gold; }
+    .header i { color: gold; margin: 10px; }
+    button {
       padding: 10px 20px;
       background-color: rgb(0, 162, 255);
       color: white;
@@ -91,6 +60,8 @@
       border-radius: 5px;
       cursor: pointer;
     }
+    .bouton-positionne { position: absolute; top: 100px; left: 200px; }
+    .bouton-bas{ padding: 10px 20px; background-color: rgb(0, 162, 255); color: white; border: none; border-radius: 5px; cursor: pointer; }
     .content {
       max-width: 800px;
       margin: 15px auto;
@@ -99,18 +70,42 @@
       border-radius: 15px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
-
-    .content strong {
-      color: #000;
-    }
-
+    .content strong { color: #000; }
   </style>
 </head>
 <body>
-  <a>
-    <button class="bouton-positionne" onclick="window.location.href='Candidatures.html';">Candidatures</button>
-    <button style="margin-left: 1000px;" class="bouton-positionne" onclick="window.location.href='LoginRegister.html';">Login/Inscription</button>
+  <a href="index.html">
+    <div style="
+      position: absolute;
+      top: 0px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      height: 80px;
+      z-index: 10;
+    ">
+    </div>
   </a>
+  
+   <a href="index.html">
+    <div style="
+      position: absolute;
+      top: 0px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      height: 80px;
+      z-index: 10;
+    ">
+    </div>
+  </a>
+    <a>
+      <button class="bouton-positionne" onclick="window.location.href='Historique.html';">Historique</button>
+      <button style="margin-left: 1000px;" class="bouton-positionne" onclick="window.location.href='LoginRegister.html';">Login/Inscription</button>
+    </a>
+  </style>
+</head>
+<body>
 
   <div class="header">
     DÉTAILS DE L'OFFRE
@@ -127,16 +122,20 @@
   </div>
 
   <div style="text-align:right; max-width:800px; margin:20px auto;">
-    <button class="bouton-bas" onclick="postuler()">Postuler</button>
+    <button id="postuler" class="bouton-bas">Postuler</button>
   </div>
 
   <script>
   // Récupère le paramètre "id" dans l'URL (ex: details.html?id=3)
   const params = new URLSearchParams(window.location.search);
   const annonceId = params.get('id');
+  const params1 = new URLSearchParams(window.location.search);
+  const personneId = params1.get('id');
+  const params2 = new URLSearchParams(window.location.search);
+  const entrepriseId = params2.get('id');
 
   if (annonceId) {
-    fetch(`http://localhost:8000/myflashjob/api/annonces/${annonceId}`)
+    fetch(`http://localhost:8000/api/annonces/${annonceId}`)
       .then(response => response.json())
       .then(annonce => {
         document.getElementById('titre').innerHTML = annonce.intitule_emploi;
@@ -145,13 +144,24 @@
         document.getElementById('type_contrat').innerHTML = annonce.type_contrat;
         document.getElementById('horaires').innerHTML = annonce.horaires;
         document.getElementById('date_publication').innerHTML = annonce.date_publication;
-        document.getElementById('entreprise').innerHTML = annonce.entreprise__nom;
+        document.getElementById('entreprise').innerHTML = annonce.entreprise.nom;
       })
       .catch(error => console.error('Erreur chargement annonce:', error));
   } else {
     console.error('Aucun ID d’annonce trouvé dans l’URL');
   }
 
+
+  if (personneId){
+   document.getElementById('postuler').addEventListener('click', () => {
+    window.location.href=`postuler.html?personneId=${personneId}&id=${annonceId}`;
+});
+
+}else{
+  document.getElementById('postuler').addEventListener('click', () => {
+  window.location.href=`LoginRegister.html`;
+});
+}
   </script>
 
 </body>
