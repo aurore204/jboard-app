@@ -248,7 +248,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
   const password = document.getElementById("login-password").value;
   const type = document.getElementById("user-type").value; // <-- récupère le type
 
-  try {
+try {
     const response = await fetch("http://localhost:8000/api/login/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -256,23 +256,27 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     });
 
     const result = await response.json();
+    console.log("Réponse complète du backend :", result);
 
     if (result.success) {
-      // Redirige selon le type d'utilisateur
       if (type === "personne") {
-          localStorage.setItem("personneId", result.id);
+          // Stocke toutes les infos de l'utilisateur dans localStorage
+          localStorage.setItem("personneConnectee", JSON.stringify(result));
+          // Redirection vers la page utilisateur
           window.location.href = `compte_utilisateur.html?id=${result.id}`;
       } else {
-          localStorage.setItem("entrepriseId", result.id);
+          // Stocke toutes les infos de l'entreprise dans localStorage
+          localStorage.setItem("entrepriseConnectee", JSON.stringify(result));
+          // Redirection vers la page entreprise
           window.location.href = `compte_entreprise.html?id=${result.id}`;
       }
     } else {
       alert(result.error || "Erreur lors de la connexion");
     }
-  } catch (error) {
+} catch (error) {
     console.error(error);
-    alert("erreur: essayer un autre mail, mot de passe ou encore type d'user!");
-  }
+    alert("Erreur : vérifier mail, mot de passe ou type de compte !");
+}
 });
 
 

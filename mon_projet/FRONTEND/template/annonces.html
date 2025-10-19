@@ -85,8 +85,8 @@
     </div>
   </a>
     <a>
-      <button class="bouton-positionne" onclick="window.location.href='index.html';">Accueil</button>
-      <button style="margin-left: 1000px;" class="bouton-positionne" onclick="window.location.href='LoginRegister.html';">Deconnexion</button>
+      <button class="bouton-positionne" id="btnAccueil">Accueil</button>
+      <button style="margin-left: 1000px;" class="bouton-positionne" id="btnDeconnexion">Deconnexion</button>
     </a>
     <br><br><br><br><br><br><br>
      
@@ -210,6 +210,14 @@
     <script>
 
 const entrepriseId = localStorage.getItem("entrepriseId");
+document.getElementById("btnAccueil").addEventListener("click", () => {
+    window.location.href = `index.html?annonces=&entrepriseId=${entrepriseId}`;
+});
+
+document.getElementById("btnDeconnexion").addEventListener("click", () => {
+    localStorage.removeItem("personneConnectee");
+    window.location.href = "LoginRegister.html";
+});
 const apiUrl = `http://127.0.0.1:8000/api/annonces/?entreprise_id=${entrepriseId}`; 
 // Fonction pour récupérer les données
 async function fetchData() {

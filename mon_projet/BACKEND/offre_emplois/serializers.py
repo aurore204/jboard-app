@@ -32,11 +32,13 @@ class AnnonceSerializer(serializers.ModelSerializer):
         entreprise = serializers.PrimaryKeyRelatedField(
             queryset=Entreprise.objects.all()
         )
+        entreprise_nom = serializers.CharField(source='entreprise.nom', read_only=True)
+
         class Meta:
             model = Annonce
             fields = '__all__'
 
-
+  
 class PersonneLightSerializer(serializers.ModelSerializer):
     class Meta:
         model = Personne
@@ -53,12 +55,14 @@ class CandidatureSerializer(serializers.ModelSerializer):
     personne_id = serializers.PrimaryKeyRelatedField(
         queryset=Personne.objects.all(),
         source='personne',
-        write_only=True
+        write_only=True,
+        required=False  
     )
     annonce_id = serializers.PrimaryKeyRelatedField(
         queryset=Annonce.objects.all(),
         source='annonce',
-        write_only=True
+        write_only=True,
+        required=False  
     )
 
     class Meta:
@@ -68,5 +72,4 @@ class CandidatureSerializer(serializers.ModelSerializer):
             'annonce', 'annonce_id', 'status',
             'date_candidature', 'updated_at'
         ]
-    read_only_fields = ['date_candidature', 'updated_at', 'personne', 'annonce', 'status']
-
+        read_only_fields = ['date_candidature', 'updated_at', 'personne', 'annonce']  

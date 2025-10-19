@@ -114,3 +114,10 @@ def liste_candidat_annonces(request, annonce_id):
         return JsonResponse(serializer.data, safe=False)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+@api_view(['GET'])
+def status_options(request):
+    try:
+        options = ["En attente", "Accepté", "Refusé"]
+        return JsonResponse(options, safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

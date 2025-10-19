@@ -8,100 +8,232 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <style>
-        body {
-            background: linear-gradient(to right, #ece9e6, #ffffff);
-            font-family: 'Roboto', sans-serif;
-        }
-        .container {
-            margin-top: 50px;
-        }
-        table {
-            width: 100%;
-        }
-        th, td {
-            padding: 15px;
-            text-align: left;
-        }
-        th {
-            background-color: #1976d2;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
+body {
+      background: 
+    linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)),
+    url('../assets/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  background-position: top;/* Ajuste la position verticale de l'image de fond */
+
+    }        .container { margin-top: 50px; }
+        table { width: 100%; }
+        th, td { padding: 15px; text-align: left; }
+        th { background-color: #1976d2; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        button { padding: 5px 10px; margin: 2px; }
     </style>
 </head>
 <body>
+    <a href="index.html">
+    <div style="
+      position: absolute;
+      top: 0px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      height: 80px;
+      z-index: 10;
+    ">
+    </div>
+  </a>
+  
+   <a href="index.html">
+    <div style="
+      position: absolute;
+      top: 0px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      height: 80px;
+      z-index: 10;
+    ">
+    </div>
+  </a>
+    <a>
+      <button class="bouton-positionne" id="btnAccueil">Accueil</button>
+      <button style="margin-left: 1000px;" class="bouton-positionne" id="btnDeconnexion">Deconnexion</button>
+    </a>
+    <br><br><br><br><br><br><br>
+     
     <div class="container">
         <h3 class="center-align">Liste des Candidats pour l'Annonce</h3>
         <table class="striped">
             <thead>
                 <tr>
-                    <th>prenom</th>
-                    <th>nom</th>
-                    <th>intitule_emploi</th>
-                    <th>Date de Candidature</th>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Intitulé emploi</th>
+                    <th>Date de candidature</th>
                     <th>Status</th>
                     <th>Actions</th>
-
                 </tr>
             </thead>
             <tbody id="candidatsTableBody">
-                <!-- Les lignes des candidats seront insérées ici par JavaScript -->
+                <!-- Lignes insérées par JS -->
             </tbody>
         </table>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {// Attendre que le DOM soit chargé, le dom est la structure HTML de la page elle sert a afficher les éléments 
-            const urlParams = new URLSearchParams(window.location.search);// on récupère les paramètres de l'URL
-            const annonceId = urlParams.get('annonce_id');
+    <!-- Modal pour modifier le status -->
+    <div id="EditStatusModal" class="modal">
+        <div class="modal-content">
+            <h4>Modifier le statut</h4>
+            <form id="EditStatusForm">
+                <div class="input-field">
+                    <select id="EditStatusSelect" required></select>
+                    <label for="EditStatusSelect">Statut</label>
+                </div>
+                <button type="submit" class="btn green">Modifier</button>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-red btn-flat">Annuler</a>
+        </div>
+    </div>
 
-            try {
-                const response = await fetch(`http://127.0.0.1:8000/api/candidatures/${annonceId}/personne/`);// on fait une requête fetch pour récupérer les candidatures associées à l'annonce
-                const candidatures = await response.json();
+<script>
+let currentCandidatureId = null;
+let editStatusModal = null;
 
-                // Insérer les candidatures dans le tableau
-                const tableBody = document.getElementById('candidatsTableBody');
-                candidatures.forEach(candidature => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${candidature.personne.prenom}</td>
-                        <td>${candidature.personne.nom}</td>
-                        <td>${candidature.annonce.intitule_emploi}</td>
-                        <td>${candidature.date_candidature}</td>
-                        <td>${candidature.status}</td>
-                        <td>
-                            <button class="btn red" onclick="deleteCandidature(${candidature.id})">Supprimer</button>
-                            <button class="btn green" onclick="voirCandidature(${candidature.id})">Voir</button>
+// Charger les options de status depuis l'API
+async function loadStatusOptions() {
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/candidatures/status/');
+        const options = await response.json(); // ["En attente", "Accepté", "Refusé"]
 
-                        </td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Erreur lors de la récupération des candidatures:', error);
-            }
+        const select = document.getElementById('EditStatusSelect');
+        select.innerHTML = '';
+        options.forEach(opt => {
+            const optionEl = document.createElement('option');
+            optionEl.value = opt;
+            optionEl.textContent = opt;
+            select.appendChild(optionEl);
         });
 
-        async function deleteCandidature(candidatureId) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer cette candidature ?')) {
-                try {
-                    const response = await fetch(`http://127.0.0.1:8000/api/Candidature/${candidatureId}/`, {
-                        method: 'DELETE'
-                    });
-                    if (response.ok) {
-                        document.getElementById('candidatsTableBody').innerHTML = '';
-                        // Recharger la liste des candidatures
-                        location.reload();
-                    } else {
-                        console.error('Erreur lors de la suppression de la candidature:', response.statusText);
-                    }
-                } catch (error) {
-                    console.error('Erreur lors de la suppression de la candidature:', error);
-                }
-            }
+        M.FormSelect.init(select); // Rafraîchir Materialize
+    } catch (err) {
+        console.error("Erreur lors du chargement des options de status :", err);
+    }
+}
+
+// Ouvrir le modal avec la candidature à modifier
+function openEditStatusModal(candidatureId, currentStatus) {
+    currentCandidatureId = candidatureId;
+    const select = document.getElementById('EditStatusSelect');
+    select.value = currentStatus;
+    M.FormSelect.init(select);
+    editStatusModal.open();
+}
+
+// Modifier le status via l'API
+async function submitEditStatus(event) {
+    event.preventDefault();
+    const newStatus = document.getElementById('EditStatusSelect').value;
+
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/candidatures/${currentCandidatureId}/`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus })
+        });
+
+        if (response.ok) {
+            M.toast({html: 'Statut modifié avec succès !', classes: 'green'});
+            editStatusModal.close();
+            loadCandidatures(); // Recharger le tableau
+        } else {
+            M.toast({html: 'Erreur lors de la modification', classes: 'red'});
+            console.error('Erreur API:', response.statusText);
         }
-    </script>
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+// Supprimer une candidature
+async function voirCandidature(candidatureId) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette candidature ?')) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/candidatures/${candidatureId}/`, { method: 'DELETE' });
+            if (response.ok) {
+                M.toast({html: 'Candidature supprimée', classes: 'green'});
+                loadCandidatures();
+            } else {
+                console.error('Erreur suppression:', response.statusText);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+}
+
+// Charger les candidatures pour l'annonce
+async function loadCandidatures() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const annonceId = urlParams.get('annonce_id');
+
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/candidatures/${annonceId}/personne/`);
+        const candidatures = await response.json();
+        const tableBody = document.getElementById('candidatsTableBody');
+        tableBody.innerHTML = '';
+
+        candidatures.forEach(c => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${c.personne.prenom}</td>
+                <td>${c.personne.nom}</td>
+                <td>${c.annonce.intitule_emploi}</td>
+                <td>${c.date_candidature}</td>
+                <td>${c.status}</td>
+                <td>
+                    <button class="btn red" onclick="openEditStatusModal(${c.id}, '${c.status}')">Modifier status</button>
+                    <button class="btn green" onclick="voirCandidature(${c.id})">Voir</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    } catch (err) {
+        console.error('Erreur chargement candidatures:', err);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // Initialiser Materialize
+    const modalElem = document.getElementById('EditStatusModal');
+    editStatusModal = M.Modal.init(modalElem);
+    await loadStatusOptions();
+    await loadCandidatures();
+
+    // Formulaire de modification
+    document.getElementById('EditStatusForm').addEventListener('submit', submitEditStatus);
+});
+
+async function submitEditStatus(event) {
+    event.preventDefault();
+    const newStatus = document.getElementById('EditStatusSelect').value;
+
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/candidatures/${currentCandidatureId}/`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus }) // juste status
+        });
+
+        if (response.ok) {
+            M.toast({html: 'Statut modifié avec succès !', classes: 'green'});
+            editStatusModal.close();
+            loadCandidatures();
+        } else {
+            const data = await response.json();
+            console.error('Erreur API:', data); // Affiche le détail du 400
+            M.toast({html: 'Erreur lors de la modification', classes: 'red'});
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+</script>
 </body>
 </html>

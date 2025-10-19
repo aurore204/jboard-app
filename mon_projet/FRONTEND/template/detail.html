@@ -14,9 +14,11 @@
       padding: 0;
     }
     body {
-      background-image: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0)), url('../assets/background.jpg');
-      background-repeat: no-repeat;
-      background-size: cover;
+      background: 
+    linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)),
+    url('../assets/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  background-position: top;/* Ajuste la position verticale de l'image de fond */
     }
     nav {
       background-color: #9fa6ad;
@@ -100,13 +102,13 @@
     </div>
   </a>
     <a>
-      <button class="bouton-positionne" onclick="window.location.href='Historique.html';">Historique</button>
+      <button class="bouton-positionne" onclick="window.location.href='index.html';">Acceuil</button>
       <button style="margin-left: 1000px;" class="bouton-positionne" onclick="window.location.href='LoginRegister.html';">Login/Inscription</button>
     </a>
   </style>
 </head>
 <body>
-
+  <br><br><br><br><br>
   <div class="header">
     DÉTAILS DE L'OFFRE
   </div>
@@ -129,10 +131,8 @@
   // Récupère le paramètre "id" dans l'URL (ex: details.html?id=3)
   const params = new URLSearchParams(window.location.search);
   const annonceId = params.get('id');
-  const params1 = new URLSearchParams(window.location.search);
-  const personneId = params1.get('id');
-  const params2 = new URLSearchParams(window.location.search);
-  const entrepriseId = params2.get('id');
+  const personneId = localStorage.getItem('personneId');
+  const entrepriseId = localStorage.getItem('entrepriseId');
 
   if (annonceId) {
     fetch(`http://localhost:8000/api/annonces/${annonceId}`)
@@ -144,7 +144,7 @@
         document.getElementById('type_contrat').innerHTML = annonce.type_contrat;
         document.getElementById('horaires').innerHTML = annonce.horaires;
         document.getElementById('date_publication').innerHTML = annonce.date_publication;
-        document.getElementById('entreprise').innerHTML = annonce.entreprise.nom;
+        document.getElementById('entreprise').innerHTML = annonce.entreprise_nom;
       })
       .catch(error => console.error('Erreur chargement annonce:', error));
   } else {
@@ -153,15 +153,14 @@
 
 
   if (personneId){
+    
    document.getElementById('postuler').addEventListener('click', () => {
     window.location.href=`postuler.html?personneId=${personneId}&id=${annonceId}`;
 });
 
 }else{
-  document.getElementById('postuler').addEventListener('click', () => {
-  window.location.href=`LoginRegister.html`;
-});
-}
+    document.getElementById('postuler').style.display = 'none';
+  }
   </script>
 
 </body>

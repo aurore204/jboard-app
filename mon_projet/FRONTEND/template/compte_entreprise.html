@@ -81,13 +81,23 @@
     </div>
   </div>
   <div style="text-align:right; max-width:800px; margin:20px auto;">
-    <button onclick="window.location.href='annonces.html'" class="bouton-bas" >Créer une annonce</button>
+    <button id="btn-creer-annonce" class="bouton-bas" >Créer une annonce</button>
   </div>
 
   <script>
   // Récupère le paramètre "id" dans l'URL (ex: compte.html?id=3)
   const params = new URLSearchParams(window.location.search);
   const compteId = params.get('id');
+  const btnCreerAnnonce = document.getElementById('btn-creer-annonce');
+  if (compteId) {
+    // Si une entreprise est connectée → activer le bouton
+    btnCreerAnnonce.addEventListener('click', () => {
+      window.location.href = `annonces.html?entrepriseId=${entrepriseId}`;
+    });
+  } else {
+    // Sinon, désactiver ou masquer le bouton
+    btnCreerAnnonce.style.display = 'none';}
+
 
   if (compteId) {
     fetch(`http://localhost:8000/api/entreprises/${compteId}/`)

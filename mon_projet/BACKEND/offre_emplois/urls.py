@@ -17,6 +17,7 @@ urlpatterns = [
     path('api/personnes/create/', views.create_personnes, name='create_personnes'),
     path('api/login/', views.login, name='login'),
     path('api/candidatures/<int:annonce_id>/personne/', views.liste_candidat_annonces, name='liste_candidat_annonces'),
+    path('api/candidatures/status/', views.status_options, name='status_options'),
 
 
     path('api/', include(router.urls)),
