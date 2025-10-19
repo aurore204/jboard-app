@@ -121,3 +121,16 @@ def status_options(request):
         return JsonResponse(options, safe=False)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+@api_view(['PATCH'])
+def update_candidature_status(request, candidature_id):
+    try:
+        data = json.loads(request.body)
+        status = data.get("status")
+
+        if not status:
+            return JsonResponse({'error': 'Statut manquant'}, status=400)
+
+        print("Updating candidature ID:", candidature_id, "to status:", status)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
