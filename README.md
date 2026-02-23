@@ -255,7 +255,7 @@ Vérifiez que le service MySQL est bien démarré et que les identifiants dans `
 
 ## Auteur
 
-**[Ton Prénom Nom]** — Etudiante en Pré-MSc à Epitech Paris  
+**[Aurore]** — Etudiante en Pré Master à Epitech Paris  
 [LinkedIn](https://linkedin.com/in/aurore-njimegne) 
 
 ---
